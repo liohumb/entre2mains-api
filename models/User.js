@@ -1,6 +1,11 @@
 import mongoose from 'mongoose'
 
 const UserSchema = new mongoose.Schema( {
+    role:
+        {
+            type: String,
+            default: 'USER'
+        },
     firstname:
         {
             type: String,
@@ -33,12 +38,20 @@ const UserSchema = new mongoose.Schema( {
             type: String,
             default: ''
         },
+    bannerPath:
+        {
+            type: String,
+            default: ''
+        },
     artisan:
         {
             type: Array,
             default: []
         },
-    postCode: String
+    society: String,
+    postCode: String,
+    viewProfil: Number,
+    impressions: Number
 }, { timestamps: true } )
 
 const User = mongoose.model( 'User', UserSchema )

@@ -1,21 +1,38 @@
 import bcrypt from 'bcrypt'
-// import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 import User from '../models/User.js'
-import Artisan from '../models/Artisan.js'
 
-/* REGISTER USER */
-export const registerUser = async ( req, res ) => {
+/* REGISTER */
+export const register = async ( req, res ) => {
     try {
         const {
-            firstname, lastname, email, password, picturePath, artisan, postCode
+            role,
+            firstname,
+            lastname,
+            email,
+            password,
+            picturePath,
+            bannerPath,
+            artisan,
+            society,
+            postCode
         } = req.body
 
         const salt = await bcrypt.genSalt()
         const hash = await bcrypt.hash( password, salt )
 
         const newUser = new User( {
-            firstname, lastname, email, password: hash, picturePath, artisan, postCode
+            role,
+            firstname,
+            lastname,
+            email,
+            password: hash,
+            picturePath,
+            bannerPath,
+            artisan,
+            society,
+            postCode
         } )
         const savedUser = await newUser.save()
 
@@ -25,31 +42,20 @@ export const registerUser = async ( req, res ) => {
     }
 }
 
-/* REGISTER ARTISAN */
-export const registerArtisan = async ( req, res ) => {
+/* LOGGING IN */
+export const login = async ( req, res ) => {
     try {
-        const {
-            firstname, lastname, email, password, picturePath, bannerPath, society, postCode
-        } = req.body
+        const { email, password } = req.body
+        const user = await User.findOne( { email: email } )
+        if (!user) return res.status(400).json({msg: "Utilisateur inconnu"})
 
-        const salt = await bcrypt.genSalt()
-        const hash = await bcrypt.hash( password, salt )
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) return res.status(400).json({msg: 'Mot de passe incorrect'})
 
-        const newArtisan = new Artisan( {
-            firstname,
-            lastname,
-            email,
-            password: hash,
-            picturePath,
-            bannerPath,
-            society,
-            postCode,
-            viewProfil: Math.floor( Math.random() * 10000 ),
-            impressions: Math.floor( Math.random() * 10000 )
-        } )
-        const savedArtisan = await newArtisan.save()
+        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET)
+        delete user.password
 
-        res.status( 201 ).json( savedArtisan )
+        res.status(200).json({token, user})
     } catch (e) {
         res.status( 500 ).json( { error: e.message } )
     }
