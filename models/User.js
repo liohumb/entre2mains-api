@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema( {
             type: String,
             default: ''
         },
-    artisan:
+    artisans:
         {
             type: Array,
             default: []
