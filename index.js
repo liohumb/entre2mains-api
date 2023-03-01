@@ -39,7 +39,7 @@ const upload = multer( { storage } )
 
 /* ROUTES WITH FILES */
 app.post( '/auth/user/register', upload.single( 'picture' ), registerUser )
-app.post( 'auth/artisan/register', upload.single( 'picture' ), registerArtisan )
+app.post( '/auth/artisan/register', upload.single( 'picture' ), registerArtisan )
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001
