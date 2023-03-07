@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url'
 import { register } from './controllers/auth.js'
 import { createPost } from './controllers/posts.js'
 import { verifyToken } from './middleware/auth.js'
+
 import authRoutes from './routes/auth.js'
 import userRoutes from './routes/users.js'
 import postRoutes from './routes/posts.js'
@@ -58,6 +59,7 @@ mongoose.set( 'strictQuery', true )
 mongoose.connect( process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-} ).then( () => {
+} ).then(console.log('La base de donnée MongoDB connecté'))
+    .then( () => {
     app.listen( PORT, () => console.log( `Le serveur est en route => PORT: ${PORT}` ) )
 } ).catch( ( error ) => console.log( `${error} connexion impossible` ) )
